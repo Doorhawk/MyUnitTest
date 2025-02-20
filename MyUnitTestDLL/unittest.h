@@ -106,7 +106,7 @@
 #define CHECK_UNSTOP(obj)\
 	do{\
 		if(!(obj)) {\
-			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL !" #obj);\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL !(" #obj")");\
 			ut::TestRegistry::getInstance().getThisTest().setFail();\
 		}\
 		else{\
@@ -197,8 +197,8 @@
 #define CHECK(obj)\
 	do{\
 		if(!(obj)) {\
-			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL !" #obj);\
-			throw std::invalid_argument("!"#obj); \
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL !(" #obj")");\
+			throw std::invalid_argument("!("#obj")"); \
 		}\
 		else{\
 			ut::TestRegistry::getInstance().getThisTest().addLog("OK " #obj);\
