@@ -22,9 +22,10 @@ namespace ut {
 		return passed;
 	}
 	void Test::run() {
+		passed = true;
+		error = "";
 		try {
 			fun();
-			passed = true;
 		}
 		catch (const std::exception& e) {  // Ловит std::invalid_argument и другие стандартные исключения
 			error = e.what();
@@ -42,6 +43,10 @@ namespace ut {
 			error = "unknown exception";
 			passed = false;
 		}
+
+		if (!passed && error == "") {
+			error = "check logs";
+		}
 	}
 	void Test::addLog(std::string log) {
 		testLog.push_back(log);
@@ -51,6 +56,9 @@ namespace ut {
 	}
 	const std::vector<std::string>& Test::getLog() const {
 		return testLog;
+	}
+	void Test::setFail() {
+		passed = false;
 	}
 
 

@@ -3,19 +3,20 @@
 TEST(first) {
 	int a = 0;
 	int b = 0;
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
-	EQVAL(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	throw std::invalid_argument("INVALID");
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
+	EQVAL_UNSTOP(2 + 2, 4);
+	EQVAL_UNSTOP(2 + 2, 3);
 }
 
 
@@ -54,7 +55,17 @@ TEST(testwithfix1) {
 	EQVAL(mega.y, 10);
 }
 TEST(testwithfix2) {
-	CHECK(mega.x == 0);
+	CHECK_UNSTOP(mega.x == 0);
+	CHECK_UNSTOP(mega.y == 10);
+	CHECK_UNSTOP(mega.y == 9);
+	CHECK_UNSTOP(mega.y == 10);
+	CHECK_UNSTOP(mega.y == 9);
+	CHECK_UNSTOP(mega.y == 10);
+	CHECK_UNSTOP(mega.y == 9);
+	CHECK_UNSTOP(mega.y == 10);
+	CHECK(mega.y == 10);
+	CHECK(mega.y == 10);
+	CHECK(mega.y == 10);
 	CHECK(mega.y == 10);
 }
 
@@ -193,10 +204,11 @@ TEST_GROUP(exepct, bed1) {
 
 
 int main() {
-	//RUN_ALL_TESTS();
-	RUN_TESTS_GROUP(g2);
-	RUN_TESTS_GROUP(g1);
-	RUN_TESTS_GROUP(exepct);
+	TEST_LOG_OFF();
+	RUN_ALL_TESTS();
+	//RUN_TESTS_GROUP(g2);
+	//RUN_TESTS_GROUP(g1);
+	//RUN_TESTS_GROUP(exepct);
 
 
 	/*for (int i = 0; i < 100; i++) {

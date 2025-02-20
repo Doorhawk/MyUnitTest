@@ -24,6 +24,97 @@
 #define BLUE_COLOR "\033[0;36m"
 #define DARK_GREY "\033[0;90m"
 
+#define EXPECT_THROW_MSG_UNSTOP(stmt, exc_type, msg) \
+    do {\
+        bool caught = false;\
+        try {\
+            stmt;\
+        } catch (const exc_type& e) {\
+            if (std::string(e.what()) == msg) {\
+                caught = true;\
+				ut::TestRegistry::getInstance().getThisTest().addLog("OK " #exc_type " " msg);\
+            } else {\
+                std::ostringstream oss; \
+                oss << "Expected exception message: \"" << msg << "\", but got: \"" << e.what() << "\"";\
+				ut::TestRegistry::getInstance().getThisTest().addLog("FAIL " + oss.str());\
+                ut::TestRegistry::getInstance().getThisTest().setFail();\
+            }\
+        } catch (...) {\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL Expected exception of type " #exc_type ", but got a different exception.");\
+            ut::TestRegistry::getInstance().getThisTest().setFail();\
+        }\
+        if (!caught) {\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL Expected exception of type " #exc_type " was not thrown.");\
+            ut::TestRegistry::getInstance().getThisTest().setFail();\
+        }\
+    } while (0)
+
+#define EXPECT_THROW_UNSTOP(stmt, exc_type) \
+    do {\
+        bool caught = false;\
+        try {\
+            stmt;\
+        } catch (const exc_type& e) {\
+                caught = true;\
+				ut::TestRegistry::getInstance().getThisTest().addLog("OK " #exc_type);\
+        } catch (...) {\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL Expected " #exc_type ", got a different exception.");\
+            ut::TestRegistry::getInstance().getThisTest().setFail();\
+        }\
+        if (!caught) {\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL Expected " #exc_type " was not thrown.");\
+            ut::TestRegistry::getInstance().getThisTest().setFail();\
+        }\
+    } while (0)
+
+// для а и b должны быть определены != и <<
+#define EQVAL_UNSTOP(a,b)\
+	do{\
+		if((a)!=(b)) {\
+			std::ostringstream oss;\
+			oss << #a " != " #b << ", expected: "<<a<<", got "<<b;\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL "+oss.str());\
+			ut::TestRegistry::getInstance().getThisTest().setFail();\
+		}\
+		else{\
+			std::ostringstream oss;\
+			oss << #a " == " #b << ", "<<a<<"=="<<b;\
+			ut::TestRegistry::getInstance().getThisTest().addLog("OK "+oss.str());\
+		}\
+	}while(0)
+
+#define EQVAL_EPS_UNSTOP(a, b, eps) \
+    do { \
+		if ((eps) <= 0) { \
+            throw std::invalid_argument("Epsilon must be positive: " #eps); \
+        } \
+        if (std::abs((a) - (b)) >= (eps)) { \
+            std::ostringstream oss; \
+            oss << "Expected: |" #a " - " #b "| < " #eps \
+                << ", got: " << std::abs((a) - (b)) << " >= " << (eps); \
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL "+oss.str());\
+            ut::TestRegistry::getInstance().getThisTest().setFail();\
+        } \
+		else{\
+			std::ostringstream oss; \
+            oss << " |" #a " - " #b "| < " #eps \
+                << ", " << std::abs((a) - (b)) << " < " << (eps); \
+			ut::TestRegistry::getInstance().getThisTest().addLog("OK "+oss.str());\
+		}\
+    } while (0)
+
+#define CHECK_UNSTOP(obj)\
+	do{\
+		if(!(obj)) {\
+			ut::TestRegistry::getInstance().getThisTest().addLog("FAIL !" #obj);\
+			ut::TestRegistry::getInstance().getThisTest().setFail();\
+		}\
+		else{\
+			ut::TestRegistry::getInstance().getThisTest().addLog("OK " #obj);\
+		}\
+	}while(0)
+
+
 #define EXPECT_THROW_MSG(stmt, exc_type, msg) \
     do {\
         bool caught = false;\
@@ -220,6 +311,7 @@ namespace ut {
 		const std::vector<std::string>& getLog() const;
 		void addLog(std::string);
 		void clearLog();
+		void setFail();
 	private:
 		std::vector<std::string> testLog;
 		std::string groupName;
